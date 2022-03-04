@@ -1,5 +1,6 @@
 import { AfterViewInit, Component, ElementRef, OnInit, Renderer2, ViewChild } from '@angular/core';
 import { Cell, FLICKER_DURATION, Grid } from '../app.types';
+import { FibonacciService } from '../fibonacci.service';
 import { getEmptyGrid } from '../helpers/getEmptyGrid';
 
 @Component({
@@ -12,7 +13,7 @@ export class GridComponent implements AfterViewInit {
 
     private _grid: Grid;
 
-    constructor(private _renderer: Renderer2) {
+    constructor(private _renderer: Renderer2, private _fibonacci: FibonacciService) {
         this._grid = getEmptyGrid();
     }
 
@@ -73,7 +74,7 @@ export class GridComponent implements AfterViewInit {
         cell.value++;
         cell.lastChangeIndex = lastChangeIndex;
         cell.element!.innerText = cell.value + '';
-        cell.element?.classList.add('grid__row__cell--updated');
+        cell.element!.classList.add('grid__row__cell--updated');
         updatedCells.push(cell);
     }
 
@@ -87,5 +88,13 @@ export class GridComponent implements AfterViewInit {
         }, FLICKER_DURATION);
     }
 
-    private _findFibonacciSeries(): void {}
+    private _findFibonacciSeries(): void {
+        const cells = this._fibonacci.getFibonacciCells(this._grid);
+        this._updateFibonacciCells(cells);
+        this._scheduleFibonacciCellRemoval(cells);
+    }
+
+    private _updateFibonacciCells(cells: Cell[]): void {}
+
+    private _scheduleFibonacciCellRemoval(cells: Cell[]): void {}
 }
