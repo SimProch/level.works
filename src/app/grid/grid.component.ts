@@ -22,8 +22,13 @@ export class GridComponent implements AfterViewInit {
 
     _resetGrid(): void {
         this._grid = getEmptyGrid();
-        this._gridHolder.nativeElement.innerHTML = '';
+        this._removeGrid();
         this._renderGrid();
+    }
+
+    private _removeGrid() {
+        const gridElement = this._gridHolder.nativeElement;
+        while (gridElement.firstChild) gridElement.removeChild(gridElement.firstChild);
     }
 
     _renderGrid(): void {
