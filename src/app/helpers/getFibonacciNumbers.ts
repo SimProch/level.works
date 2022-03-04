@@ -1,4 +1,6 @@
-const cache: { [key: string]: number } = {};
+import { Dictionary } from '../app.types';
+
+const cache: Dictionary<number> = {};
 const clicksPerSecond = 10;
 const clicksPerMinute = clicksPerSecond * 60;
 const clicksPerHour = clicksPerMinute * 60;
