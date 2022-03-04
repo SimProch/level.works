@@ -34,6 +34,7 @@ export class GridComponent implements AfterViewInit {
     _renderGrid(): void {
         const gridElement = this._gridHolder.nativeElement;
         const self = this;
+        let lastAppliedChangeIndex = 0;
         this._grid.forEach((row, rowIndex) => {
             const rowElement: HTMLDivElement = this._renderer.createElement('div');
             rowElement.classList.add('grid__row');
@@ -43,42 +44,45 @@ export class GridComponent implements AfterViewInit {
                 cell.element = cellElement;
                 cell.element.classList.add('grid__row__cell');
                 cell.element.addEventListener('click', function () {
-                    self._onItemClick(rowIndex, cellIndex, cell);
+                    self._onItemClick(rowIndex, cellIndex, cell, lastAppliedChangeIndex++);
                 });
             });
             this._renderer.appendChild(gridElement, rowElement);
         });
     }
 
-    private _onItemClick(column: number, row: number, cell: Cell): void {
-        this._updateCells(cell, column, row);
+    private _onItemClick(column: number, row: number, cell: Cell, lastChangeIndex: number): void {
+        this._updateCells(cell, column, row, lastChangeIndex);
         this._findFibonacciSeries();
     }
 
-    private _updateCells(cell: Cell, column: number, row: number) {
+    private _updateCells(cell: Cell, column: number, row: number, lastChangeIndex: number) {
         const updatedCells: Cell[] = [];
-        this._updateCell(cell, updatedCells);
+        this._updateCell(cell, updatedCells, lastChangeIndex);
         for (let i = 0; i < this._grid.length; i++) {
             const rowCell = this._grid[column][i];
             const columnCell = this._grid[i][row];
-            if (rowCell !== cell) this._updateCell(rowCell, updatedCells);
-            if (columnCell !== cell) this._updateCell(columnCell, updatedCells);
+            if (rowCell !== cell) this._updateCell(rowCell, updatedCells, lastChangeIndex);
+            if (columnCell !== cell) this._updateCell(columnCell, updatedCells, lastChangeIndex);
         }
-        this._scheduleColorRemoval(updatedCells);
+        this._scheduleColorRemoval(updatedCells, lastChangeIndex);
     }
 
-    private _updateCell(cell: Cell, updatedCells: Cell[]): void {
+    private _updateCell(cell: Cell, updatedCells: Cell[], lastChangeIndex: number): void {
         cell.value ??= 0;
         cell.value++;
+        cell.lastChangeIndex = lastChangeIndex;
         cell.element!.innerText = cell.value + '';
         cell.element?.classList.add('grid__row__cell--updated');
         updatedCells.push(cell);
     }
 
-    private _scheduleColorRemoval(updatedCells: Cell[]): void {
+    private _scheduleColorRemoval(updatedCells: Cell[], lastChangeIndex: number): void {
         setTimeout(() => {
             updatedCells.forEach((cell) => {
-                cell.element?.classList.remove('grid__row__cell--updated');
+                if (cell.lastChangeIndex == lastChangeIndex) {
+                    cell.element?.classList.remove('grid__row__cell--updated');
+                }
             });
         }, FLICKER_DURATION);
     }

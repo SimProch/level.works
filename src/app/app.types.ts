@@ -1,6 +1,7 @@
 export interface Cell {
     value: number | null;
     element?: HTMLElement;
+    lastChangeIndex?: number;
 }
 
 export type Row = Cell[];
