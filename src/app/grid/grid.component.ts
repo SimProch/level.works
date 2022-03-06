@@ -54,7 +54,7 @@ export class GridComponent implements AfterViewInit {
 
     private _onItemClick(column: number, row: number, cell: Cell, lastChangeIndex: number): void {
         this._updateCells(cell, column, row, lastChangeIndex);
-        this._findFibonacciSeries(column, row);
+        this._findFibonacciSeries(column, row, lastChangeIndex);
     }
 
     private _updateCells(cell: Cell, column: number, row: number, lastChangeIndex: number) {
@@ -88,26 +88,43 @@ export class GridComponent implements AfterViewInit {
         }, FLICKER_DURATION);
     }
 
-    private _findFibonacciSeries(column: number, row: number): void {
+    private _findFibonacciSeries(column: number, row: number, lastChangeIndex: number): void {
         const fibonacciSequences = this._fibonacci.getFibonacciCells(this._grid, column, row);
         const cells = this._getUniqueFibonacciCells(fibonacciSequences);
-        console.log(cells);
-        this._updateFibonacciCells(cells);
-        this._scheduleFibonacciCellRemoval(cells);
+        this._updateFibonacciCells(cells, lastChangeIndex);
     }
 
-    private _getUniqueFibonacciCells(fibonacciSequences: Array<GridCell[]>): GridCell[] {
-        const set: Set<GridCell> = new Set();
+    private _getUniqueFibonacciCells(fibonacciSequences: Array<GridCell[]>): Cell[] {
+        const set: Set<Cell> = new Set();
         fibonacciSequences.forEach((sequence) => {
             sequence.forEach((cell) => {
-                set.add(cell);
+                set.add(cell.cellRef!);
             });
         });
         const result = Array.from(set);
         return result;
     }
 
-    private _updateFibonacciCells(cells: Cell[]): void {}
+    private _updateFibonacciCells(cells: Cell[], lastChangeIndex: number): void {
+        const updatedCells: Cell[] = [];
+        cells.forEach((cell) => {
+            cell.lastChangeIndex = lastChangeIndex;
+            cell.element!.classList.add('grid__row__cell--fibonacci');
+            updatedCells.push(cell);
+        });
+        this._scheduleFibonacciCellRemoval(updatedCells, lastChangeIndex);
+    }
 
-    private _scheduleFibonacciCellRemoval(cells: Cell[]): void {}
+    private _scheduleFibonacciCellRemoval(updatedCells: Cell[], lastChangeIndex: number): void {
+        setTimeout(() => {
+            updatedCells.forEach((cell) => {
+                if (cell.lastChangeIndex == lastChangeIndex) {
+                    cell.element!.classList.remove('grid__row__cell--fibonacci');
+                    cell.element!.classList.remove('grid__row__cell--updated');
+                    cell.value = null;
+                    cell.element!.innerText = '';
+                }
+            });
+        }, FLICKER_DURATION);
+    }
 }

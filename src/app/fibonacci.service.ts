@@ -43,10 +43,10 @@ export class FibonacciService {
         for (let i = 0; i < grid.length; i++) {
             const rowCell = grid[row][i];
             const columnCell = grid[i][column];
-            const rowSequence = this._findSequences(rowCell, grid, column, i);
-            // const columnSequence = this._findSequence(columnCell, grid, i, column);
+            const rowSequence = this._findSequences(rowCell, grid, row, i);
+            const columnSequence = this._findSequences(columnCell, grid, i, column);
             if (rowSequence) result.push(...rowSequence);
-            // if (columnSequence) result.push(...columnSequence);
+            if (columnSequence) result.push(...columnSequence);
         }
         return result;
     }
@@ -61,9 +61,9 @@ export class FibonacciService {
         if (!currentCellHasFibonacci) return;
         const result: Array<GridCell[]> = [];
         const verticalSequence = this._findVerticalSequence(grid, row, column);
-        // const horizontalSequence = this._findHorizontalSequence(grid, column, row);
+        const horizontalSequence = this._findHorizontalSequence(grid, row, column);
         if (verticalSequence) result.push(...verticalSequence);
-        // if (horizontalSequence) result.push(...horizontalSequence);
+        if (horizontalSequence) result.push(...horizontalSequence);
         return result;
     }
 
@@ -72,20 +72,17 @@ export class FibonacciService {
         row: number,
         column: number,
     ): Array<GridCell[]> | undefined {
-        const allSequenceElements = this._getFibonacciElementsForCurrentNode(grid, column, row);
+        const allSequenceElements = this._getVerticalFibsForCurrentNode(grid, column, row);
         if (allSequenceElements.length < this._sequenceLength) return;
-        const topDownSequenceElements = [...allSequenceElements].sort((x, y) => x.row - y.row);
+        const topDownSequenceElements = allSequenceElements.sort((x, y) => x.row - y.row);
         const topDownSequences = this._getSequences(topDownSequenceElements);
-        const bottomUpSequenceElements = [...allSequenceElements].sort((x, y) => y.row - x.row);
+        const bottomUpSequenceElements = topDownSequenceElements.reverse();
         const bottomUpSequences = this._getSequences(bottomUpSequenceElements);
-        return [...topDownSequences, ...bottomUpSequences];
+        const result = [...topDownSequences, ...bottomUpSequences];
+        return result.length > 0 ? result : undefined;
     }
 
-    private _getFibonacciElementsForCurrentNode(
-        grid: Grid,
-        column: number,
-        row: number,
-    ): GridCell[] {
+    private _getVerticalFibsForCurrentNode(grid: Grid, column: number, row: number): GridCell[] {
         const gridCell = this._getGridCell(grid, column, row);
         const adjacentElements = [gridCell];
         for (let i = 1; i <= this._sequenceLength - 1; i++) {
@@ -137,5 +134,37 @@ export class FibonacciService {
             if (currentFibonacciIndex + 1 !== nextFibonacciIndex) return false;
         }
         return true;
+    }
+
+    private _findHorizontalSequence(
+        grid: Grid,
+        row: number,
+        column: number,
+    ): Array<GridCell[]> | undefined {
+        const allSequenceElements = this._getHorizontalFibsForCurrentNode(grid, column, row);
+        if (allSequenceElements.length < this._sequenceLength) return;
+        const leftToRightSequenceElements = allSequenceElements.sort((x, y) => x.column - y.column);
+        const leftToRightSequences = this._getSequences(leftToRightSequenceElements);
+        const rightToleftSequenceElements = leftToRightSequenceElements.reverse();
+        const rightToLeftSequences = this._getSequences(rightToleftSequenceElements);
+        const result = [...leftToRightSequences, ...rightToLeftSequences];
+        return result.length > 0 ? result : undefined;
+    }
+
+    private _getHorizontalFibsForCurrentNode(grid: Grid, column: number, row: number): GridCell[] {
+        const gridCell = this._getGridCell(grid, column, row);
+        const adjacentElements = [gridCell];
+        for (let i = 1; i <= this._sequenceLength - 1; i++) {
+            const cellAbove = this._getGridCell(grid, column - i, row);
+            const cellBelow = this._getGridCell(grid, column + i, row);
+            adjacentElements.push(cellAbove, cellBelow);
+        }
+        const elementsWithinGrid = adjacentElements.filter(
+            (el) => el.column > -1 && el.column < grid.length,
+        );
+        const fibonacciElements = elementsWithinGrid.filter(
+            (i) => this._fibsToIndex[i.value!] != null,
+        );
+        return fibonacciElements;
     }
 }

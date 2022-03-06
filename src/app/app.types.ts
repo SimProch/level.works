@@ -18,4 +18,4 @@ export type Dictionary<T> = { [key: string]: T };
 export const FLICKER_DURATION = 2000;
 export const DEFAULT_SEQUENCE_LENGTH = 5;
 export const DUPLICATE_FIBONACCI_NUMBER = 1;
-export const DEFAULT_GRID_SIZE = 5;
+export const DEFAULT_GRID_SIZE = 10;

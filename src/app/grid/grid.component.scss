@@ -21,7 +21,6 @@
             height: 24px;
             cursor: pointer;
             border: 1px solid #fff;
-            color: black;
             font-size: 12px;
             text-align: center;
             -webkit-touch-callout: none;
@@ -41,6 +40,15 @@
 
                 &:hover {
                     background-color: darken(#ffff00, 5%);
+                }
+            }
+
+            &--fibonacci {
+                background-color: #0000ff !important;
+                color: white;
+
+                &:hover {
+                    background-color: darken(#0000ff, 5%);
                 }
             }
         }
