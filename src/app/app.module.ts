@@ -5,14 +5,9 @@ import { AppComponent } from './app.component';
 import { GridComponent } from './grid/grid.component';
 
 @NgModule({
-  declarations: [
-    AppComponent,
-    GridComponent
-  ],
-  imports: [
-    BrowserModule
-  ],
-  providers: [],
-  bootstrap: [AppComponent]
+    declarations: [AppComponent, GridComponent],
+    imports: [BrowserModule],
+    providers: [],
+    bootstrap: [AppComponent],
 })
-export class AppModule { }
+export class AppModule {}

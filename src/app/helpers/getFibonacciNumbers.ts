@@ -28,8 +28,9 @@ export function getFibonacciNumbers(): number[] {
     let lastFibonacciNumber = 0;
     let index = 0;
     while (lastFibonacciNumber < clicksPerYear) {
-        lastFibonacciNumber = getFibonacciNumber(index++);
+        lastFibonacciNumber = getFibonacciNumber(index);
         result.push(lastFibonacciNumber);
+        index++;
     }
     return result;
 }

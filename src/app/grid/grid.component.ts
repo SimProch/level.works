@@ -1,5 +1,5 @@
 import { AfterViewInit, Component, ElementRef, OnInit, Renderer2, ViewChild } from '@angular/core';
-import { Cell, FLICKER_DURATION, Grid } from '../app.types';
+import { Cell, FLICKER_DURATION, Grid, GridCell } from '../app.types';
 import { FibonacciService } from '../fibonacci.service';
 import { getEmptyGrid } from '../helpers/getEmptyGrid';
 
@@ -54,7 +54,7 @@ export class GridComponent implements AfterViewInit {
 
     private _onItemClick(column: number, row: number, cell: Cell, lastChangeIndex: number): void {
         this._updateCells(cell, column, row, lastChangeIndex);
-        this._findFibonacciSeries();
+        this._findFibonacciSeries(column, row);
     }
 
     private _updateCells(cell: Cell, column: number, row: number, lastChangeIndex: number) {
@@ -88,10 +88,23 @@ export class GridComponent implements AfterViewInit {
         }, FLICKER_DURATION);
     }
 
-    private _findFibonacciSeries(): void {
-        const cells = this._fibonacci.getFibonacciCells(this._grid);
+    private _findFibonacciSeries(column: number, row: number): void {
+        const fibonacciSequences = this._fibonacci.getFibonacciCells(this._grid, column, row);
+        const cells = this._getUniqueFibonacciCells(fibonacciSequences);
+        console.log(cells);
         this._updateFibonacciCells(cells);
         this._scheduleFibonacciCellRemoval(cells);
+    }
+
+    private _getUniqueFibonacciCells(fibonacciSequences: Array<GridCell[]>): GridCell[] {
+        const set: Set<GridCell> = new Set();
+        fibonacciSequences.forEach((sequence) => {
+            sequence.forEach((cell) => {
+                set.add(cell);
+            });
+        });
+        const result = Array.from(set);
+        return result;
     }
 
     private _updateFibonacciCells(cells: Cell[]): void {}
