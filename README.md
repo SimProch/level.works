@@ -38,6 +38,10 @@ Task for technical assessent for level.works.
 -   Fairly fast
 -   Fibonacci is calculated to the 44th number (I do not expect there will be more elements than that)
 -   Sequences to color green are done only on updated elements, rather than the entire grid, providing some speed
+-   The sequences to color green can be anywhere between 5 to 9
+    -   Sequence has to have length of 5
+    -   If there is sequence of length 9, it means there are multiple sequences of length 5
+    -   Sequence can be either top-down, bottom-up, left-right or right-left
 
 ## Asynchronicity
 
