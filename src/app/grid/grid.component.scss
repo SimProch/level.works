@@ -10,6 +10,14 @@
     flex-direction: column;
     margin-top: 8px;
 
+    &--fibonacci {
+        .grid__row {
+            .grid__row__cell {
+                pointer-events: none !important;
+            }
+        }
+    }
+
     .grid__row {
         display: flex;
         flex-direction: row;

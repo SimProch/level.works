@@ -12,6 +12,7 @@ export class GridComponent implements AfterViewInit {
     @ViewChild('gridHolder') _gridHolder!: ElementRef<HTMLDivElement>;
 
     private _grid: Grid;
+    private _disableClick = false;
 
     constructor(private _renderer: Renderer2, private _fibonacci: FibonacciService) {
         this._grid = getEmptyGrid();
@@ -34,7 +35,6 @@ export class GridComponent implements AfterViewInit {
 
     _renderGrid(): void {
         const gridElement = this._gridHolder.nativeElement;
-        const self = this;
         let lastAppliedChangeIndex = 0;
         this._grid.forEach((row, rowIndex) => {
             const rowElement: HTMLDivElement = this._renderer.createElement('div');
@@ -44,8 +44,9 @@ export class GridComponent implements AfterViewInit {
                 this._renderer.appendChild(rowElement, cellElement);
                 cell.element = cellElement;
                 cell.element.classList.add('grid__row__cell');
-                cell.element.addEventListener('click', function () {
-                    self._onItemClick(rowIndex, cellIndex, cell, lastAppliedChangeIndex++);
+                cell.element.addEventListener('click', () => {
+                    if (this._disableClick) return;
+                    this._onItemClick(rowIndex, cellIndex, cell, lastAppliedChangeIndex++);
                 });
             });
             this._renderer.appendChild(gridElement, rowElement);
@@ -90,6 +91,7 @@ export class GridComponent implements AfterViewInit {
 
     private _findFibonacciSeries(column: number, row: number, lastChangeIndex: number): void {
         const fibonacciSequences = this._fibonacci.getFibonacciCells(this._grid, column, row);
+        if (fibonacciSequences.length < 1) return;
         const cells = this._getUniqueFibonacciCells(fibonacciSequences);
         this._updateFibonacciCells(cells, lastChangeIndex);
     }
@@ -112,11 +114,15 @@ export class GridComponent implements AfterViewInit {
             cell.element!.classList.add('grid__row__cell--fibonacci');
             updatedCells.push(cell);
         });
+        this._disableClick = true;
+        this._gridHolder.nativeElement.classList.add('grid--fibonacci');
         this._scheduleFibonacciCellRemoval(updatedCells, lastChangeIndex);
     }
 
     private _scheduleFibonacciCellRemoval(updatedCells: Cell[], lastChangeIndex: number): void {
         setTimeout(() => {
+            this._disableClick = false;
+            this._gridHolder.nativeElement.classList.remove('grid--fibonacci');
             updatedCells.forEach((cell) => {
                 if (cell.lastChangeIndex == lastChangeIndex) {
                     cell.element!.classList.remove('grid__row__cell--fibonacci');
