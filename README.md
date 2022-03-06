@@ -1,27 +1,67 @@
 # Level.Works
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 13.2.5.
+Task for technical assessent for level.works.
 
-## Development server
+## Description
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The app will automatically reload if you change any of the source files.
+> Create a grid of 50x50. When you click on a cell, all values in the
+> cells in the same row and column are increased by 1. If a cell is
+> empty, it will get a value of 1. After each change a cell will briefly
+> turn yellow.  
+> If 5 consecutive numbers in the Fibonacci sequence
+> are next to each other, these cells will briefly turn green and will
+> be cleared. Use the programming language of your choice.
 
-## Code scaffolding
+## Changing grid size
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
+`app.types.ts` contains a couple of constants that can be changed to update functionality of this task
 
-## Build
+-   `FLICKER_DURATION` - Specifies the length of different color application. Defaults to 500ms
+-   `DEFAULT_SEQUENCE_LENGTH` - Specifies the sequence searched for. As per above description, defaults to 5.
+-   `DEFAULT_GRID_SIZE` - specifies the size of the grid. As per above description, defaults to 50
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory.
+## Libraries used and reasoning
 
-## Running unit tests
+-   code linting tools
+-   Angular
+    -   Not really used all that much
+    -   Could easily be done without Angular/React with almost no changes (only angular concepts used are components, service and renderer)
+    -   Used for easy scaffolding with typescript and basic tests
 
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
+## Grid rendering
 
-## Running end-to-end tests
+-   Grid is done using `div`, causing rendering and repaints fairly slow with more elements (see performance below). For 50x50, it's alright
+-   Definitely room for improvement
 
-Run `ng e2e` to execute the end-to-end tests via a platform of your choice. To use this command, you need to first add a package that implements end-to-end testing capabilities.
+## Fibonacci sequence calculation
 
-## Further help
+-   Fairly fast
+-   Fibonacci is calculated to the 44th number (I do not expect there will be more elements than that)
+-   Sequences to color green are done only on updated elements, rather than the entire grid, providing some speed
 
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.io/cli) page.
+## Asynchronicity
+
+-   There are 2 things that require async updates
+    -   Creating yellow "cross" after element is clicked (column and row)
+        -   Keeping track of number of clicks so that last clicked cross remains it's color
+    -   Creating green "lines" after there are 5 consecutive elements
+        -   Similar to yellow coloring
+        -   Disables further clicks when a sequence is colored until it is removed (Mainly because I did not know how to approach such changes)
+
+## Speed on local machine:
+
+-   For cell calculation
+    -   Grid 50x50 2.5ms
+    -   Grid 100x100 3.7ms
+    -   Grid 150x150 6s
+    -   Grid 200x200 7ms
+-   For painting (see images)
+    -   Grid 50x50 ~250ms (100 render, rest paiting) (first image)
+    -   Grid 200x200 2.8s (1.15s render, 1.7s painting) (second image)
+
+![Perf 50 by 50](perf/50by50.png)
+![Perf 200 by 200](perf/200by200.png)
+
+## Availability
+
+-   Preview available on [Github Pages](https://simproch.github.io/level.works/);

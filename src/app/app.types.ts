@@ -15,7 +15,20 @@ export type Row = Cell[];
 export type Grid = Row[];
 export type Dictionary<T> = { [key: string]: T };
 
-export const FLICKER_DURATION = 2000;
+/**
+ * Number 1 occurs twice in fibonacci series (0,1,1,2,3,5,8)
+ */
+export const DUPLICATE_FIB_NUMBER = 1;
+
+/**
+ * Specifies the duration how long cells will be colored differently
+ */
+export const FLICKER_DURATION = 500;
+/**
+ * Specifies the length of series searched for
+ */
 export const DEFAULT_SEQUENCE_LENGTH = 5;
-export const DUPLICATE_FIBONACCI_NUMBER = 1;
-export const DEFAULT_GRID_SIZE = 10;
+/**
+ * Specifies the grid size (rendered elements)
+ */
+export const DEFAULT_GRID_SIZE = 50;

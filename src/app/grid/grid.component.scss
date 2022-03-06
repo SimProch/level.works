@@ -44,7 +44,6 @@
 
             &--updated {
                 background-color: #ffff00;
-                color: black;
 
                 &:hover {
                     background-color: darken(#ffff00, 5%);
@@ -52,11 +51,10 @@
             }
 
             &--fibonacci {
-                background-color: #0000ff !important;
-                color: white;
+                background-color: #00ff00 !important;
 
                 &:hover {
-                    background-color: darken(#0000ff, 5%);
+                    background-color: darken(#00ff00, 5%);
                 }
             }
         }

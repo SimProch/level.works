@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, ElementRef, OnInit, Renderer2, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, Renderer2, ViewChild } from '@angular/core';
 import { Cell, FLICKER_DURATION, Grid, GridCell } from '../app.types';
 import { FibonacciService } from '../fibonacci.service';
 import { getEmptyGrid } from '../helpers/getEmptyGrid';
@@ -46,7 +46,10 @@ export class GridComponent implements AfterViewInit {
                 cell.element.classList.add('grid__row__cell');
                 cell.element.addEventListener('click', () => {
                     if (this._disableClick) return;
+                    const t1 = performance.now();
                     this._onItemClick(rowIndex, cellIndex, cell, lastAppliedChangeIndex++);
+                    const t2 = performance.now();
+                    console.log(t2 - t1);
                 });
             });
             this._renderer.appendChild(gridElement, rowElement);

@@ -3,7 +3,7 @@ import {
     Cell,
     DEFAULT_SEQUENCE_LENGTH,
     Dictionary,
-    DUPLICATE_FIBONACCI_NUMBER as DUPLICATE_FIB_NUMBER,
+    DUPLICATE_FIB_NUMBER,
     Grid,
     GridCell,
 } from './app.types';
