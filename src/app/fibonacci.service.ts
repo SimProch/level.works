@@ -73,7 +73,10 @@ export class FibonacciService {
         column: number,
     ): Array<GridCell[]> | undefined {
         const allSequenceElements = this._getVerticalFibsForCurrentNode(grid, column, row);
-        if (allSequenceElements.length < this._sequenceLength) return;
+        const fibonacciElements = allSequenceElements.filter(
+            (i) => this._fibsToIndex[i.value!] != null,
+        );
+        if (fibonacciElements.length < this._sequenceLength) return;
         const topDownSequenceElements = allSequenceElements.sort((x, y) => x.row - y.row);
         const topDownSequences = this._getSequences(topDownSequenceElements);
         const bottomUpSequenceElements = topDownSequenceElements.reverse();
@@ -93,10 +96,7 @@ export class FibonacciService {
         const elementsWithinGrid = adjacentElements.filter(
             (el) => el.row > -1 && el.row < grid.length,
         );
-        const fibonacciElements = elementsWithinGrid.filter(
-            (i) => this._fibsToIndex[i.value!] != null,
-        );
-        return fibonacciElements;
+        return elementsWithinGrid;
     }
 
     private _getGridCell(grid: Grid, column: number, row: number): GridCell {
@@ -142,7 +142,10 @@ export class FibonacciService {
         column: number,
     ): Array<GridCell[]> | undefined {
         const allSequenceElements = this._getHorizontalFibsForCurrentNode(grid, column, row);
-        if (allSequenceElements.length < this._sequenceLength) return;
+        const fibonacciElements = allSequenceElements.filter(
+            (i) => this._fibsToIndex[i.value!] != null,
+        );
+        if (fibonacciElements.length < this._sequenceLength) return;
         const leftToRightSequenceElements = allSequenceElements.sort((x, y) => x.column - y.column);
         const leftToRightSequences = this._getSequences(leftToRightSequenceElements);
         const rightToleftSequenceElements = leftToRightSequenceElements.reverse();
@@ -162,9 +165,6 @@ export class FibonacciService {
         const elementsWithinGrid = adjacentElements.filter(
             (el) => el.column > -1 && el.column < grid.length,
         );
-        const fibonacciElements = elementsWithinGrid.filter(
-            (i) => this._fibsToIndex[i.value!] != null,
-        );
-        return fibonacciElements;
+        return elementsWithinGrid;
     }
 }
