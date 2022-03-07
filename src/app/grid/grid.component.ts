@@ -46,10 +46,7 @@ export class GridComponent implements AfterViewInit {
                 cell.element.classList.add('grid__row__cell');
                 cell.element.addEventListener('click', () => {
                     if (this._disableClick) return;
-                    const t1 = performance.now();
                     this._onItemClick(rowIndex, cellIndex, cell, lastAppliedChangeIndex++);
-                    const t2 = performance.now();
-                    console.log(t2 - t1);
                 });
             });
             this._renderer.appendChild(gridElement, rowElement);
